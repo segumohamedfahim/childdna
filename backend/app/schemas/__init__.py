@@ -5,6 +5,7 @@ from app.schemas.child_token import ChildTokenCreate, ChildTokenUpdate, ChildTok
 from app.schemas.rescue_session import RescueSessionCreate, RescueSessionUpdate, RescueSessionResponse
 from app.schemas.timeline_event import TimelineEventCreate, TimelineEventUpdate, TimelineEventResponse
 from app.schemas.reunion_record import ReunionRecordCreate, ReunionRecordUpdate, ReunionRecordResponse
+from app.schemas.scanner import ScannerLookupRequest, ScannerLookupResponse
 
 __all__ = [
     "GuardianCreate",
@@ -25,4 +26,6 @@ __all__ = [
     "ReunionRecordCreate",
     "ReunionRecordUpdate",
     "ReunionRecordResponse",
+    "ScannerLookupRequest",
+    "ScannerLookupResponse",
 ]

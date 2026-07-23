@@ -200,6 +200,21 @@ class TokenNotActiveForQR(HTTPException):
         )
 
 
+class TokenNotActive(HTTPException):
+    """Exception raised when token is not in ACTIVE status for scanner lookup"""
+
+    def __init__(self, token_code: str) -> None:
+        super().__init__(
+            status_code=400,
+            detail={
+                "success": False,
+                "message": "Token is not active. Only active tokens can be scanned.",
+                "error_code": "TOKEN_NOT_ACTIVE",
+                "details": {"token_code": token_code},
+            },
+        )
+
+
 class QRGenerationFailed(HTTPException):
     """Exception raised when QR code generation fails"""
     
@@ -329,6 +344,15 @@ def register_exception_handlers(app) -> None:
     @app.exception_handler(TokenNotActiveForQR)
     async def token_not_active_for_qr_handler(
         request: Request, exc: TokenNotActiveForQR
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+    
+    @app.exception_handler(TokenNotActive)
+    async def token_not_active_handler(
+        request: Request, exc: TokenNotActive
     ) -> JSONResponse:
         return JSONResponse(
             status_code=exc.status_code,

@@ -68,6 +68,20 @@ class ChildTokenRepository(BaseRepository[ChildToken]):
         await self.session.refresh(token)
         return token
     
+    async def record_scan(self, token: ChildToken) -> ChildToken:
+        """Update last_scanned_at timestamp after a successful scan.
+
+        Args:
+            token: The child token model instance.
+
+        Returns:
+            ChildToken: The updated token with refreshed attributes.
+        """
+        token.last_scanned_at = datetime.utcnow()
+        await self.session.commit()
+        await self.session.refresh(token)
+        return token
+
     async def delete(self, token: ChildToken) -> None:
         """Soft delete a token"""
         token.is_active = False
