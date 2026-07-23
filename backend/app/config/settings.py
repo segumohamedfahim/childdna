@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     API_PREFIX: str = "/api/v1"
     
     # Database
-    DATABASE_URL: str = "postgresql://child_dna:password@localhost:5432/child_dna"
+    DATABASE_URL: str = "postgresql://postgres:fahim2007@localhost:5432/child_dna"
     
     # JWT
     JWT_SECRET_KEY: str = "your-secret-key-min-32-characters-long"

@@ -215,6 +215,54 @@ class TokenNotActive(HTTPException):
         )
 
 
+class RescueSessionNotFound(HTTPException):
+    """Exception raised when rescue session is not found"""
+
+    def __init__(self, incident_id: str) -> None:
+        super().__init__(
+            status_code=404,
+            detail={
+                "success": False,
+                "message": "Rescue session not found",
+                "error_code": "RESCUE_SESSION_NOT_FOUND",
+                "details": {"incident_id": incident_id},
+            },
+        )
+
+
+class InvalidSessionStatusTransition(HTTPException):
+    """Exception raised when an invalid status transition is attempted"""
+
+    def __init__(self, current_status: str, requested_status: str) -> None:
+        super().__init__(
+            status_code=400,
+            detail={
+                "success": False,
+                "message": f"Invalid status transition from {current_status} to {requested_status}",
+                "error_code": "INVALID_SESSION_STATUS_TRANSITION",
+                "details": {
+                    "current_status": current_status,
+                    "requested_status": requested_status,
+                },
+            },
+        )
+
+
+class ActiveRescueSessionExists(HTTPException):
+    """Exception raised when child already has an active rescue session"""
+
+    def __init__(self, child_id: str) -> None:
+        super().__init__(
+            status_code=409,
+            detail={
+                "success": False,
+                "message": "Child already has an active rescue session",
+                "error_code": "ACTIVE_RESCUE_SESSION_EXISTS",
+                "details": {"child_id": child_id},
+            },
+        )
+
+
 class QRGenerationFailed(HTTPException):
     """Exception raised when QR code generation fails"""
     
@@ -362,6 +410,33 @@ def register_exception_handlers(app) -> None:
     @app.exception_handler(QRGenerationFailed)
     async def qr_generation_failed_handler(
         request: Request, exc: QRGenerationFailed
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+    
+    @app.exception_handler(RescueSessionNotFound)
+    async def rescue_session_not_found_handler(
+        request: Request, exc: RescueSessionNotFound
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+    
+    @app.exception_handler(InvalidSessionStatusTransition)
+    async def invalid_session_status_transition_handler(
+        request: Request, exc: InvalidSessionStatusTransition
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+    
+    @app.exception_handler(ActiveRescueSessionExists)
+    async def active_rescue_session_exists_handler(
+        request: Request, exc: ActiveRescueSessionExists
     ) -> JSONResponse:
         return JSONResponse(
             status_code=exc.status_code,

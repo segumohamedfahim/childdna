@@ -21,8 +21,10 @@ class TimelineEventRepository(BaseRepository[TimelineEvent]):
         return result.scalars().all()
     
     async def get_by_session(self, session_id: str) -> list[TimelineEvent]:
-        """Get all timeline events for a rescue session"""
+        """Get all timeline events for a rescue session, ordered by timestamp."""
         result = await self.session.execute(
-            select(TimelineEvent).where(TimelineEvent.rescue_session_id == session_id)
+            select(TimelineEvent)
+            .where(TimelineEvent.rescue_session_id == session_id)
+            .order_by(TimelineEvent.timestamp.asc())
         )
         return result.scalars().all()

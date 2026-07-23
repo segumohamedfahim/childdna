@@ -28,6 +28,7 @@ class SessionStatus(str, Enum):
 
 class EventType(str, Enum):
     """Timeline event type enumeration"""
+    INCIDENT_CREATED = "incident_created"
     TOKEN_ACTIVATED = "token_activated"
     RESCUER_ASSIGNED = "rescuer_assigned"
     LOCATION_UPDATED = "location_updated"

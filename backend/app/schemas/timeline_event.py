@@ -19,6 +19,7 @@ class TimelineEventCreate(TimelineEventBase):
     """Schema for creating a TimelineEvent"""
     child_id: str
     rescue_session_id: Optional[str] = None
+    timestamp: Optional[datetime] = None
 
 
 class TimelineEventUpdate(BaseModel):
