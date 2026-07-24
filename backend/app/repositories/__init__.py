@@ -9,6 +9,8 @@ from app.repositories.incident_analysis import IncidentAnalysisRepository
 from app.repositories.incident_match import IncidentMatchRepository
 from app.repositories.alert import AlertRepository
 from app.repositories.notification import NotificationRepository
+from app.repositories.user import UserRepository
+from app.repositories.refresh_token import RefreshTokenRepository
 
 __all__ = [
     "GuardianRepository",
@@ -21,4 +23,6 @@ __all__ = [
     "IncidentMatchRepository",
     "AlertRepository",
     "NotificationRepository",
+    "UserRepository",
+    "RefreshTokenRepository",
 ]

@@ -98,3 +98,11 @@ class NotificationStatus(str, Enum):
     SENT = "sent"
     DELIVERED = "delivered"
     FAILED = "failed"
+
+
+class UserRole(str, Enum):
+    """User role enumeration for authentication and authorization"""
+    GUARDIAN = "guardian"
+    AUTHORITY = "authority"
+    ADMIN = "admin"
+    SCANNER = "scanner"

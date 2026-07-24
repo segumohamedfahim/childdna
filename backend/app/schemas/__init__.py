@@ -26,6 +26,15 @@ from app.schemas.notification import (
     NotificationListResponse,
     NotificationSummaryResponse,
 )
+from app.schemas.user import (
+    UserCreate,
+    UserUpdate,
+    UserResponse,
+    UserLoginRequest,
+    TokenResponse,
+    RefreshTokenRequest,
+    ChangePasswordRequest,
+)
 
 __all__ = [
     "GuardianCreate",
@@ -63,4 +72,11 @@ __all__ = [
     "NotificationResponse",
     "NotificationListResponse",
     "NotificationSummaryResponse",
+    "UserCreate",
+    "UserUpdate",
+    "UserResponse",
+    "UserLoginRequest",
+    "TokenResponse",
+    "RefreshTokenRequest",
+    "ChangePasswordRequest",
 ]

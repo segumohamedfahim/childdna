@@ -10,6 +10,9 @@ from app.services.incident_intelligence_service import IncidentIntelligenceServi
 from app.services.incident_matching_service import IncidentMatchingService
 from app.services.alert_service import AlertService
 from app.services.notification_service import NotificationService
+from app.services.password_service import PasswordService
+from app.services.jwt_service import JWTService
+from app.services.auth_service import AuthService
 
 __all__ = [
     "GuardianService",
@@ -24,4 +27,7 @@ __all__ = [
     "IncidentMatchingService",
     "AlertService",
     "NotificationService",
+    "PasswordService",
+    "JWTService",
+    "AuthService",
 ]

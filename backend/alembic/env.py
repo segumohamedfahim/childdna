@@ -16,6 +16,8 @@ from app.models.child_token import ChildToken
 from app.models.rescue_session import RescueSession
 from app.models.timeline_event import TimelineEvent
 from app.models.reunion_record import ReunionRecord
+from app.models.user import User
+from app.models.refresh_token import RefreshToken
 from app.database.base import Base
 
 # this is the Alembic Config object

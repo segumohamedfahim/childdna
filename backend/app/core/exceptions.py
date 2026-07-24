@@ -326,6 +326,141 @@ class InvalidAlertStatusTransition(HTTPException):
         )
 
 
+class InvalidCredentials(HTTPException):
+    """Exception raised when login credentials are invalid"""
+
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=401,
+            detail={
+                "success": False,
+                "message": "Invalid email or password",
+                "error_code": "INVALID_CREDENTIALS",
+                "details": None,
+            },
+        )
+
+
+class InvalidToken(HTTPException):
+    """Exception raised when a JWT token is invalid"""
+
+    def __init__(self, message: str = "Invalid authentication token") -> None:
+        super().__init__(
+            status_code=401,
+            detail={
+                "success": False,
+                "message": message,
+                "error_code": "INVALID_TOKEN",
+                "details": None,
+            },
+        )
+
+
+class ExpiredToken(HTTPException):
+    """Exception raised when a JWT token has expired"""
+
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=401,
+            detail={
+                "success": False,
+                "message": "Authentication token has expired",
+                "error_code": "EXPIRED_TOKEN",
+                "details": None,
+            },
+        )
+
+
+class UserNotFound(HTTPException):
+    """Exception raised when a user is not found"""
+
+    def __init__(self, user_id: str) -> None:
+        super().__init__(
+            status_code=404,
+            detail={
+                "success": False,
+                "message": "User not found",
+                "error_code": "USER_NOT_FOUND",
+                "details": {"user_id": user_id},
+            },
+        )
+
+
+class UserNotActive(HTTPException):
+    """Exception raised when a user account is not active"""
+
+    def __init__(self, user_id: str) -> None:
+        super().__init__(
+            status_code=403,
+            detail={
+                "success": False,
+                "message": "User account is not active",
+                "error_code": "USER_NOT_ACTIVE",
+                "details": {"user_id": user_id},
+            },
+        )
+
+
+class EmailAlreadyExists(HTTPException):
+    """Exception raised when email is already registered"""
+
+    def __init__(self, email: str) -> None:
+        super().__init__(
+            status_code=409,
+            detail={
+                "success": False,
+                "message": "A user with this email already exists",
+                "error_code": "EMAIL_ALREADY_EXISTS",
+                "details": {"email": email},
+            },
+        )
+
+
+class PasswordTooWeak(HTTPException):
+    """Exception raised when password does not meet strength requirements"""
+
+    def __init__(self, message: str = "Password does not meet strength requirements") -> None:
+        super().__init__(
+            status_code=400,
+            detail={
+                "success": False,
+                "message": message,
+                "error_code": "PASSWORD_TOO_WEAK",
+                "details": None,
+            },
+        )
+
+
+class RefreshTokenExpired(HTTPException):
+    """Exception raised when a refresh token has expired"""
+
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=401,
+            detail={
+                "success": False,
+                "message": "Refresh token has expired",
+                "error_code": "REFRESH_TOKEN_EXPIRED",
+                "details": None,
+            },
+        )
+
+
+class RefreshTokenRevoked(HTTPException):
+    """Exception raised when a refresh token has been revoked"""
+
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=401,
+            detail={
+                "success": False,
+                "message": "Refresh token has been revoked",
+                "error_code": "REFRESH_TOKEN_REVOKED",
+                "details": None,
+            },
+        )
+
+
 def register_exception_handlers(app) -> None:
     """Register global exception handlers for the FastAPI app"""
     
@@ -512,6 +647,87 @@ def register_exception_handlers(app) -> None:
     @app.exception_handler(InvalidAlertStatusTransition)
     async def invalid_alert_status_transition_handler(
         request: Request, exc: InvalidAlertStatusTransition
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+
+    @app.exception_handler(InvalidCredentials)
+    async def invalid_credentials_handler(
+        request: Request, exc: InvalidCredentials
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+
+    @app.exception_handler(InvalidToken)
+    async def invalid_token_handler(
+        request: Request, exc: InvalidToken
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+
+    @app.exception_handler(ExpiredToken)
+    async def expired_token_handler(
+        request: Request, exc: ExpiredToken
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+
+    @app.exception_handler(UserNotFound)
+    async def user_not_found_handler(
+        request: Request, exc: UserNotFound
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+
+    @app.exception_handler(UserNotActive)
+    async def user_not_active_handler(
+        request: Request, exc: UserNotActive
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+
+    @app.exception_handler(EmailAlreadyExists)
+    async def email_already_exists_handler(
+        request: Request, exc: EmailAlreadyExists
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+
+    @app.exception_handler(PasswordTooWeak)
+    async def password_too_weak_handler(
+        request: Request, exc: PasswordTooWeak
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+
+    @app.exception_handler(RefreshTokenExpired)
+    async def refresh_token_expired_handler(
+        request: Request, exc: RefreshTokenExpired
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+
+    @app.exception_handler(RefreshTokenRevoked)
+    async def refresh_token_revoked_handler(
+        request: Request, exc: RefreshTokenRevoked
     ) -> JSONResponse:
         return JSONResponse(
             status_code=exc.status_code,

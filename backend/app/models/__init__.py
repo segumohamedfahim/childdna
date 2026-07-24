@@ -9,6 +9,8 @@ from app.models.incident_analysis import IncidentAnalysis
 from app.models.incident_match import IncidentMatch
 from app.models.alert import Alert
 from app.models.notification import Notification
+from app.models.user import User
+from app.models.refresh_token import RefreshToken
 from app.models.enums import (
     ChildStatus,
     TokenStatus,
@@ -22,6 +24,7 @@ from app.models.enums import (
     NotificationType,
     NotificationChannel,
     NotificationStatus,
+    UserRole,
 )
 from app.models.base import TimestampMixin, SoftDeleteMixin
 
@@ -36,6 +39,8 @@ __all__ = [
     "IncidentMatch",
     "Alert",
     "Notification",
+    "User",
+    "RefreshToken",
     "ChildStatus",
     "TokenStatus",
     "SessionStatus",
@@ -48,6 +53,7 @@ __all__ = [
     "NotificationType",
     "NotificationChannel",
     "NotificationStatus",
+    "UserRole",
     "TimestampMixin",
     "SoftDeleteMixin",
 ]
