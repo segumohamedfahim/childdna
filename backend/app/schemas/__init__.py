@@ -6,6 +6,14 @@ from app.schemas.rescue_session import RescueSessionCreate, RescueSessionUpdate,
 from app.schemas.timeline_event import TimelineEventCreate, TimelineEventUpdate, TimelineEventResponse
 from app.schemas.reunion_record import ReunionRecordCreate, ReunionRecordUpdate, ReunionRecordResponse
 from app.schemas.scanner import ScannerLookupRequest, ScannerLookupResponse
+from app.schemas.incident_analysis import AnalyzeRequest, AnalyzeResponse
+from app.schemas.incident_match import (
+    MatchRequest,
+    MatchResponse,
+    MatchListResponse,
+    CompareRequest,
+    CompareResponse,
+)
 
 __all__ = [
     "GuardianCreate",
@@ -28,4 +36,11 @@ __all__ = [
     "ReunionRecordResponse",
     "ScannerLookupRequest",
     "ScannerLookupResponse",
+    "AnalyzeRequest",
+    "AnalyzeResponse",
+    "MatchRequest",
+    "MatchResponse",
+    "MatchListResponse",
+    "CompareRequest",
+    "CompareResponse",
 ]

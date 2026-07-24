@@ -41,3 +41,21 @@ class GuardianStatus(str, Enum):
     ACTIVE = "active"
     INACTIVE = "inactive"
     SUSPENDED = "suspended"
+
+
+class MatchCategory(str, Enum):
+    """Match category enumeration for incident matching"""
+    IDENTICAL = "identical"
+    VERY_HIGH = "very_high"
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+    NO_MATCH = "no_match"
+
+
+class Recommendation(str, Enum):
+    """Recommendation enumeration for incident matching"""
+    NO_ACTION = "no_action"
+    POSSIBLE_MATCH = "possible_match"
+    LIKELY_MATCH = "likely_match"
+    REVIEW = "review"

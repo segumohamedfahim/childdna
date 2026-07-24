@@ -263,6 +263,21 @@ class ActiveRescueSessionExists(HTTPException):
         )
 
 
+class AnalysisNotFound(HTTPException):
+    """Exception raised when incident analysis is not found"""
+
+    def __init__(self, incident_id: str) -> None:
+        super().__init__(
+            status_code=404,
+            detail={
+                "success": False,
+                "message": "Incident analysis not found",
+                "error_code": "ANALYSIS_NOT_FOUND",
+                "details": {"incident_id": incident_id},
+            },
+        )
+
+
 class QRGenerationFailed(HTTPException):
     """Exception raised when QR code generation fails"""
     
@@ -437,6 +452,15 @@ def register_exception_handlers(app) -> None:
     @app.exception_handler(ActiveRescueSessionExists)
     async def active_rescue_session_exists_handler(
         request: Request, exc: ActiveRescueSessionExists
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+    
+    @app.exception_handler(AnalysisNotFound)
+    async def analysis_not_found_handler(
+        request: Request, exc: AnalysisNotFound
     ) -> JSONResponse:
         return JSONResponse(
             status_code=exc.status_code,

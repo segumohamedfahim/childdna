@@ -5,12 +5,16 @@ from app.models.child_token import ChildToken
 from app.models.rescue_session import RescueSession
 from app.models.timeline_event import TimelineEvent
 from app.models.reunion_record import ReunionRecord
+from app.models.incident_analysis import IncidentAnalysis
+from app.models.incident_match import IncidentMatch
 from app.models.enums import (
     ChildStatus,
     TokenStatus,
     SessionStatus,
     EventType,
     GuardianStatus,
+    MatchCategory,
+    Recommendation,
 )
 from app.models.base import TimestampMixin, SoftDeleteMixin
 
@@ -21,11 +25,15 @@ __all__ = [
     "RescueSession",
     "TimelineEvent",
     "ReunionRecord",
+    "IncidentAnalysis",
+    "IncidentMatch",
     "ChildStatus",
     "TokenStatus",
     "SessionStatus",
     "EventType",
     "GuardianStatus",
+    "MatchCategory",
+    "Recommendation",
     "TimestampMixin",
     "SoftDeleteMixin",
 ]

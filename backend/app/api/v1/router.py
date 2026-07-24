@@ -9,6 +9,8 @@ from app.api.v1.endpoints.scanner import router as scanner_router
 from app.api.v1.endpoints.rescue import router as rescue_router
 from app.api.v1.endpoints.timeline import router as timeline_router
 from app.api.v1.endpoints.reunion import router as reunion_router
+from app.api.v1.endpoints.intelligence import router as intelligence_router
+from app.api.v1.endpoints.matching import router as matching_router
 
 api_router = APIRouter()
 
@@ -24,3 +26,5 @@ api_router.include_router(scanner_router)
 api_router.include_router(rescue_router)
 api_router.include_router(timeline_router)
 api_router.include_router(reunion_router)
+api_router.include_router(intelligence_router)
+api_router.include_router(matching_router)

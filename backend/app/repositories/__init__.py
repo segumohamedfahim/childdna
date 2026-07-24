@@ -5,6 +5,8 @@ from app.repositories.child_token import ChildTokenRepository
 from app.repositories.rescue_session import RescueSessionRepository
 from app.repositories.timeline_event import TimelineEventRepository
 from app.repositories.reunion_record import ReunionRecordRepository
+from app.repositories.incident_analysis import IncidentAnalysisRepository
+from app.repositories.incident_match import IncidentMatchRepository
 
 __all__ = [
     "GuardianRepository",
@@ -13,4 +15,6 @@ __all__ = [
     "RescueSessionRepository",
     "TimelineEventRepository",
     "ReunionRecordRepository",
+    "IncidentAnalysisRepository",
+    "IncidentMatchRepository",
 ]

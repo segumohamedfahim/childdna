@@ -6,6 +6,8 @@ from app.services.scanner_service import ScannerService
 from app.services.rescue_service import RescueService
 from app.services.timeline_service import TimelineService
 from app.services.reunion_service import ReunionService
+from app.services.incident_intelligence_service import IncidentIntelligenceService
+from app.services.incident_matching_service import IncidentMatchingService
 
 __all__ = [
     "GuardianService",
@@ -16,4 +18,6 @@ __all__ = [
     "RescueService",
     "TimelineService",
     "ReunionService",
+    "IncidentIntelligenceService",
+    "IncidentMatchingService",
 ]
