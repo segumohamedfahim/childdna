@@ -14,6 +14,18 @@ from app.schemas.incident_match import (
     CompareRequest,
     CompareResponse,
 )
+from app.schemas.alert import (
+    AlertCreate,
+    AlertUpdate,
+    AlertResponse,
+    AlertListResponse,
+    AlertSummaryResponse,
+)
+from app.schemas.notification import (
+    NotificationResponse,
+    NotificationListResponse,
+    NotificationSummaryResponse,
+)
 
 __all__ = [
     "GuardianCreate",
@@ -43,4 +55,12 @@ __all__ = [
     "MatchListResponse",
     "CompareRequest",
     "CompareResponse",
+    "AlertCreate",
+    "AlertUpdate",
+    "AlertResponse",
+    "AlertListResponse",
+    "AlertSummaryResponse",
+    "NotificationResponse",
+    "NotificationListResponse",
+    "NotificationSummaryResponse",
 ]

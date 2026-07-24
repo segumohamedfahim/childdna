@@ -8,6 +8,8 @@ from app.services.timeline_service import TimelineService
 from app.services.reunion_service import ReunionService
 from app.services.incident_intelligence_service import IncidentIntelligenceService
 from app.services.incident_matching_service import IncidentMatchingService
+from app.services.alert_service import AlertService
+from app.services.notification_service import NotificationService
 
 __all__ = [
     "GuardianService",
@@ -20,4 +22,6 @@ __all__ = [
     "ReunionService",
     "IncidentIntelligenceService",
     "IncidentMatchingService",
+    "AlertService",
+    "NotificationService",
 ]

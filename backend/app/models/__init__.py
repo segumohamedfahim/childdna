@@ -7,6 +7,8 @@ from app.models.timeline_event import TimelineEvent
 from app.models.reunion_record import ReunionRecord
 from app.models.incident_analysis import IncidentAnalysis
 from app.models.incident_match import IncidentMatch
+from app.models.alert import Alert
+from app.models.notification import Notification
 from app.models.enums import (
     ChildStatus,
     TokenStatus,
@@ -15,6 +17,11 @@ from app.models.enums import (
     GuardianStatus,
     MatchCategory,
     Recommendation,
+    AlertSeverity,
+    AlertStatus,
+    NotificationType,
+    NotificationChannel,
+    NotificationStatus,
 )
 from app.models.base import TimestampMixin, SoftDeleteMixin
 
@@ -27,6 +34,8 @@ __all__ = [
     "ReunionRecord",
     "IncidentAnalysis",
     "IncidentMatch",
+    "Alert",
+    "Notification",
     "ChildStatus",
     "TokenStatus",
     "SessionStatus",
@@ -34,6 +43,11 @@ __all__ = [
     "GuardianStatus",
     "MatchCategory",
     "Recommendation",
+    "AlertSeverity",
+    "AlertStatus",
+    "NotificationType",
+    "NotificationChannel",
+    "NotificationStatus",
     "TimestampMixin",
     "SoftDeleteMixin",
 ]

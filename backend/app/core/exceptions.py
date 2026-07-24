@@ -293,6 +293,39 @@ class QRGenerationFailed(HTTPException):
         )
 
 
+class AlertNotFound(HTTPException):
+    """Exception raised when an alert is not found"""
+
+    def __init__(self, alert_id: str) -> None:
+        super().__init__(
+            status_code=404,
+            detail={
+                "success": False,
+                "message": "Alert not found",
+                "error_code": "ALERT_NOT_FOUND",
+                "details": {"alert_id": alert_id},
+            },
+        )
+
+
+class InvalidAlertStatusTransition(HTTPException):
+    """Exception raised when an invalid alert status transition is attempted"""
+
+    def __init__(self, current_status: str, requested_status: str) -> None:
+        super().__init__(
+            status_code=400,
+            detail={
+                "success": False,
+                "message": f"Invalid alert status transition from {current_status} to {requested_status}",
+                "error_code": "INVALID_ALERT_STATUS_TRANSITION",
+                "details": {
+                    "current_status": current_status,
+                    "requested_status": requested_status,
+                },
+            },
+        )
+
+
 def register_exception_handlers(app) -> None:
     """Register global exception handlers for the FastAPI app"""
     
@@ -461,6 +494,24 @@ def register_exception_handlers(app) -> None:
     @app.exception_handler(AnalysisNotFound)
     async def analysis_not_found_handler(
         request: Request, exc: AnalysisNotFound
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+
+    @app.exception_handler(AlertNotFound)
+    async def alert_not_found_handler(
+        request: Request, exc: AlertNotFound
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+
+    @app.exception_handler(InvalidAlertStatusTransition)
+    async def invalid_alert_status_transition_handler(
+        request: Request, exc: InvalidAlertStatusTransition
     ) -> JSONResponse:
         return JSONResponse(
             status_code=exc.status_code,

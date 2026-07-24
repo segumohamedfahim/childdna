@@ -59,3 +59,42 @@ class Recommendation(str, Enum):
     POSSIBLE_MATCH = "possible_match"
     LIKELY_MATCH = "likely_match"
     REVIEW = "review"
+
+
+class AlertSeverity(str, Enum):
+    """Alert severity enumeration"""
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    CRITICAL = "critical"
+
+
+class AlertStatus(str, Enum):
+    """Alert lifecycle status enumeration"""
+    OPEN = "open"
+    ACKNOWLEDGED = "acknowledged"
+    RESOLVED = "resolved"
+    DISMISSED = "dismissed"
+
+
+class NotificationType(str, Enum):
+    """Notification type enumeration"""
+    INCIDENT_CREATED = "incident_created"
+    STATUS_CHANGED = "status_changed"
+    REUNION_COMPLETED = "reunion_completed"
+    MATCH_FOUND = "match_found"
+
+
+class NotificationChannel(str, Enum):
+    """Notification delivery channel enumeration"""
+    IN_APP = "in_app"
+    EMAIL = "email"
+    SMS = "sms"
+
+
+class NotificationStatus(str, Enum):
+    """Notification delivery status enumeration"""
+    PENDING = "pending"
+    SENT = "sent"
+    DELIVERED = "delivered"
+    FAILED = "failed"
