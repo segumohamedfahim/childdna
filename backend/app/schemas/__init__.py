@@ -35,6 +35,16 @@ from app.schemas.user import (
     RefreshTokenRequest,
     ChangePasswordRequest,
 )
+from app.schemas.report import (
+    ReportMetadata,
+    IncidentReportResponse,
+    RescueReportResponse,
+    ReunionReportResponse,
+    ChildReportResponse,
+    SystemReportResponse,
+    TimelineEventItem,
+    RescueHistoryItem,
+)
 
 __all__ = [
     "GuardianCreate",
@@ -79,4 +89,12 @@ __all__ = [
     "TokenResponse",
     "RefreshTokenRequest",
     "ChangePasswordRequest",
+    "ReportMetadata",
+    "IncidentReportResponse",
+    "RescueReportResponse",
+    "ReunionReportResponse",
+    "ChildReportResponse",
+    "SystemReportResponse",
+    "TimelineEventItem",
+    "RescueHistoryItem",
 ]

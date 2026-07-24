@@ -23,14 +23,6 @@ async def get_incident_timeline(
     incident_id: str,
     session: AsyncSession = Depends(get_db),
 ) -> list[TimelineEventResponse]:
-    """Get all timeline events for an incident.
-
-    Args:
-        incident_id: The incident UUID.
-        session: Database session.
-
-    Returns:
-        list[TimelineEventResponse]: Ordered list of timeline events.
-    """
+    """Get all timeline events for an incident."""
     service = TimelineService(session)
     return await service.get_incident_timeline(incident_id)

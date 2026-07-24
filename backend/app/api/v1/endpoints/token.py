@@ -19,15 +19,7 @@ async def create_token(
     child_id: str,
     session: AsyncSession = Depends(get_db),
 ) -> ChildTokenResponse:
-    """Generate a new token for a child.
-    
-    Args:
-        child_id: The ID of the child to generate a token for
-        session: Database session
-        
-    Returns:
-        ChildTokenResponse: The newly created token
-    """
+    """Generate a new token for a child."""
     service = TokenService(session)
     return await service.generate_token(child_id)
 
@@ -43,15 +35,7 @@ async def list_child_tokens(
     child_id: str,
     session: AsyncSession = Depends(get_db),
 ) -> list[ChildTokenResponse]:
-    """List all tokens for a child.
-    
-    Args:
-        child_id: The ID of the child
-        session: Database session
-        
-    Returns:
-        list[ChildTokenResponse]: List of tokens for the child
-    """
+    """List all tokens for a child."""
     service = TokenService(session)
     return await service.get_child_tokens(child_id)
 
@@ -67,15 +51,7 @@ async def activate_token(
     token_code: str,
     session: AsyncSession = Depends(get_db),
 ) -> ChildTokenResponse:
-    """Activate a token.
-    
-    Args:
-        token_code: The token code to activate
-        session: Database session
-        
-    Returns:
-        ChildTokenResponse: The activated token
-    """
+    """Activate a token."""
     service = TokenService(session)
     return await service.activate_token(token_code)
 
@@ -91,14 +67,6 @@ async def revoke_token(
     token_code: str,
     session: AsyncSession = Depends(get_db),
 ) -> ChildTokenResponse:
-    """Revoke a token.
-    
-    Args:
-        token_code: The token code to revoke
-        session: Database session
-        
-    Returns:
-        ChildTokenResponse: The revoked token
-    """
+    """Revoke a token."""
     service = TokenService(session)
     return await service.revoke_token(token_code)

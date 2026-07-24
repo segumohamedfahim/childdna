@@ -23,14 +23,6 @@ async def scanner_lookup(
     lookup_data: ScannerLookupRequest,
     session: AsyncSession = Depends(get_db),
 ) -> ScannerLookupResponse:
-    """Look up a child DNA token from a QR scanner.
-
-    Args:
-        lookup_data: Scanner lookup request containing the token code.
-        session: Database session from dependency injection.
-
-    Returns:
-        ScannerLookupResponse: Safe public rescue information.
-    """
+    """Look up a child DNA token from a QR scanner."""
     service = ScannerService(session)
     return await service.lookup(lookup_data)

@@ -13,6 +13,10 @@ from app.services.notification_service import NotificationService
 from app.services.password_service import PasswordService
 from app.services.jwt_service import JWTService
 from app.services.auth_service import AuthService
+from app.services.admin_service import AdminService
+from app.services.report_service import ReportService
+from app.services.analytics_service import AnalyticsService
+from app.services.prediction_service import PredictionService
 
 __all__ = [
     "GuardianService",
@@ -30,4 +34,8 @@ __all__ = [
     "PasswordService",
     "JWTService",
     "AuthService",
+    "AdminService",
+    "ReportService",
+    "AnalyticsService",
+    "PredictionService",
 ]

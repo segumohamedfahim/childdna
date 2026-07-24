@@ -28,17 +28,7 @@ async def list_notifications(
     limit: int = Query(20, ge=1, le=100, description="Max records"),
     session: AsyncSession = Depends(get_db),
 ) -> NotificationListResponse:
-    """List notifications for a guardian.
-
-    Args:
-        guardian_id: The guardian UUID.
-        skip: Number of records to skip.
-        limit: Maximum records to return.
-        session: Database session.
-
-    Returns:
-        NotificationListResponse: Paginated notification list.
-    """
+    """List notifications for a guardian."""
     service = NotificationService(session)
     return await service.get_notifications(guardian_id, skip, limit)
 
@@ -54,15 +44,7 @@ async def get_unread_count(
     guardian_id: str,
     session: AsyncSession = Depends(get_db),
 ) -> dict:
-    """Get unread notification count for a guardian.
-
-    Args:
-        guardian_id: The guardian UUID.
-        session: Database session.
-
-    Returns:
-        dict: Unread count.
-    """
+    """Get unread notification count for a guardian."""
     service = NotificationService(session)
     count = await service.get_unread_count(guardian_id)
     return {"guardian_id": guardian_id, "unread_count": count}
@@ -79,15 +61,7 @@ async def mark_as_read(
     notification_id: str,
     session: AsyncSession = Depends(get_db),
 ) -> NotificationResponse:
-    """Mark a single notification as read.
-
-    Args:
-        notification_id: The notification UUID.
-        session: Database session.
-
-    Returns:
-        NotificationResponse: The updated notification.
-    """
+    """Mark a single notification as read."""
     service = NotificationService(session)
     return await service.mark_as_read(notification_id)
 
@@ -103,15 +77,7 @@ async def mark_all_as_read(
     guardian_id: str,
     session: AsyncSession = Depends(get_db),
 ) -> dict:
-    """Mark all notifications for a guardian as read.
-
-    Args:
-        guardian_id: The guardian UUID.
-        session: Database session.
-
-    Returns:
-        dict: Number of notifications updated.
-    """
+    """Mark all notifications for a guardian as read."""
     service = NotificationService(session)
     updated = await service.mark_all_as_read(guardian_id)
     return {"guardian_id": guardian_id, "updated": updated}
@@ -132,14 +98,6 @@ async def get_notification_summary(
     guardian_id: str,
     session: AsyncSession = Depends(get_db),
 ) -> NotificationSummaryResponse:
-    """Get notification summary for a guardian.
-
-    Args:
-        guardian_id: The guardian UUID.
-        session: Database session.
-
-    Returns:
-        NotificationSummaryResponse: Summary counts.
-    """
+    """Get notification summary for a guardian."""
     service = NotificationService(session)
     return await service.get_summary(guardian_id)

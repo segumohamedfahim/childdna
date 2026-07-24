@@ -31,16 +31,7 @@ async def match_incident(
     request: MatchRequest,
     session: AsyncSession = Depends(get_db),
 ) -> MatchListResponse:
-    """Find potential matches for a rescue incident.
-
-    Args:
-        incident_id: The incident UUID.
-        request: Match request with optional candidate filter.
-        session: Database session.
-
-    Returns:
-        MatchListResponse: Ranked potential matches.
-    """
+    """Find potential matches for a rescue incident."""
     service = IncidentMatchingService(session)
     return await service.find_matches(incident_id, request)
 
@@ -59,15 +50,7 @@ async def get_incident_matches(
     incident_id: str,
     session: AsyncSession = Depends(get_db),
 ) -> MatchListResponse:
-    """Get stored matches for an incident.
-
-    Args:
-        incident_id: The incident UUID.
-        session: Database session.
-
-    Returns:
-        MatchListResponse: Stored matches ordered by similarity.
-    """
+    """Get stored matches for an incident."""
     service = IncidentMatchingService(session)
     return await service.get_matches(incident_id)
 
@@ -87,14 +70,6 @@ async def compare_analyses(
     request: CompareRequest,
     session: AsyncSession = Depends(get_db),
 ) -> CompareResponse:
-    """Compare two analyses without persisting results.
-
-    Args:
-        request: Compare request with two incident IDs.
-        session: Database session.
-
-    Returns:
-        CompareResponse: Comparison result.
-    """
+    """Compare two analyses without persisting results."""
     service = IncidentMatchingService(session)
     return await service.compare(request)

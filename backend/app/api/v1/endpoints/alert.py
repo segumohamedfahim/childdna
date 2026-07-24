@@ -25,14 +25,7 @@ router = APIRouter(tags=["alerts"])
 async def get_alert_summary(
     session: AsyncSession = Depends(get_db),
 ) -> AlertSummaryResponse:
-    """Get aggregate alert counts.
-
-    Args:
-        session: Database session.
-
-    Returns:
-        AlertSummaryResponse: Summary counts by severity and status.
-    """
+    """Get aggregate alert counts."""
     service = AlertService(session)
     return await service.get_alert_summary()
 
@@ -55,20 +48,11 @@ async def list_alerts(
     limit: int = Query(20, ge=1, le=100, description="Max records"),
     session: AsyncSession = Depends(get_db),
 ) -> AlertListResponse:
-    """List alerts with optional status/severity filters.
-
-    Args:
-        status: Optional status filter (open, acknowledged, resolved, dismissed).
-        severity: Optional severity filter (low, medium, high, critical).
-        skip: Number of records to skip.
-        limit: Maximum records to return.
-        session: Database session.
-
-    Returns:
-        AlertListResponse: Paginated alert list.
-    """
+    """List alerts with optional status/severity filters."""
     service = AlertService(session)
-    return await service.list_alerts(status=status, severity=severity, skip=skip, limit=limit)
+    return await service.list_alerts(
+        status=status, severity=severity, skip=skip, limit=limit
+    )
 
 
 @router.get(
@@ -82,18 +66,7 @@ async def get_alert(
     alert_id: str,
     session: AsyncSession = Depends(get_db),
 ) -> AlertResponse:
-    """Get a single alert by ID.
-
-    Args:
-        alert_id: The alert UUID.
-        session: Database session.
-
-    Returns:
-        AlertResponse: The alert.
-
-    Raises:
-        AlertNotFound: If the alert does not exist.
-    """
+    """Get a single alert by ID."""
     service = AlertService(session)
     return await service.get_alert(alert_id)
 
@@ -113,20 +86,7 @@ async def acknowledge_alert(
     acknowledged_by: str = Query(..., description="Name of person acknowledging"),
     session: AsyncSession = Depends(get_db),
 ) -> AlertResponse:
-    """Acknowledge an open alert.
-
-    Args:
-        alert_id: The alert UUID.
-        acknowledged_by: Name of the person acknowledging.
-        session: Database session.
-
-    Returns:
-        AlertResponse: The updated alert.
-
-    Raises:
-        AlertNotFound: If alert does not exist.
-        InvalidAlertStatusTransition: If alert is not in OPEN status.
-    """
+    """Acknowledge an open alert."""
     service = AlertService(session)
     return await service.acknowledge_alert(alert_id, acknowledged_by)
 
@@ -146,20 +106,7 @@ async def resolve_alert(
     resolved_by: str = Query(..., description="Name of person resolving"),
     session: AsyncSession = Depends(get_db),
 ) -> AlertResponse:
-    """Resolve an acknowledged or open alert.
-
-    Args:
-        alert_id: The alert UUID.
-        resolved_by: Name of the person resolving.
-        session: Database session.
-
-    Returns:
-        AlertResponse: The updated alert.
-
-    Raises:
-        AlertNotFound: If alert does not exist.
-        InvalidAlertStatusTransition: If alert is in a terminal state.
-    """
+    """Resolve an acknowledged or open alert."""
     service = AlertService(session)
     return await service.resolve_alert(alert_id, resolved_by)
 
@@ -179,21 +126,6 @@ async def dismiss_alert(
     dismissed_by: str = Query(..., description="Name of person dismissing"),
     session: AsyncSession = Depends(get_db),
 ) -> AlertResponse:
-    """Dismiss an alert from any non-terminal state.
-
-    Args:
-        alert_id: The alert UUID.
-        dismissed_by: Name of the person dismissing.
-        session: Database session.
-
-    Returns:
-        AlertResponse: The updated alert.
-
-    Raises:
-        AlertNotFound: If alert does not exist.
-        InvalidAlertStatusTransition: If alert is already resolved or dismissed.
-    """
+    """Dismiss an alert from any non-terminal state."""
     service = AlertService(session)
     return await service.dismiss_alert(alert_id, dismissed_by)
-
-

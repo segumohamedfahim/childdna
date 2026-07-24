@@ -20,6 +20,13 @@ app = FastAPI(
 setup_cors(app)
 setup_logging(app)
 
+# Setup security headers
+from app.core.security_headers import setup_security_headers
+setup_security_headers(app)
+
+# Validate settings
+settings.validate_settings()
+
 # Register exception handlers
 register_exception_handlers(app)
 

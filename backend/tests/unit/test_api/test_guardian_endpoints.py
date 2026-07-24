@@ -14,11 +14,6 @@ from app.schemas.guardian import GuardianCreate, GuardianUpdate, GuardianRespons
 class TestGuardianEndpoints:
     """Test cases for Guardian API endpoints"""
     
-    @pytest.fixture
-    def client(self) -> TestClient:
-        """Create test client"""
-        return TestClient(app)
-    
     def test_create_guardian_success(self, client: TestClient) -> None:
         """Test successful guardian creation via API"""
         # Arrange
@@ -75,7 +70,9 @@ class TestGuardianEndpoints:
         # Assert
         assert response.status_code == 409
     
-    def test_get_guardian_success(self, client: TestClient) -> None:
+    def test_get_guardian_success(
+        self, client: TestClient, admin_auth_header: dict
+    ) -> None:
         """Test successful guardian retrieval via API"""
         # Arrange
         guardian_id = "test-id"
@@ -97,12 +94,17 @@ class TestGuardianEndpoints:
             )
             mock_service_class.return_value = mock_service
             
-            response = client.get(f"/api/v1/guardians/{guardian_id}")
+            response = client.get(
+                f"/api/v1/guardians/{guardian_id}",
+                headers=admin_auth_header,
+            )
         
         # Assert
         assert response.status_code == 200
     
-    def test_get_guardian_not_found(self, client: TestClient) -> None:
+    def test_get_guardian_not_found(
+        self, client: TestClient, admin_auth_header: dict
+    ) -> None:
         """Test guardian retrieval with non-existent ID via API"""
         # Arrange
         guardian_id = "non-existent-id"
@@ -118,7 +120,10 @@ class TestGuardianEndpoints:
             )
             mock_service_class.return_value = mock_service
             
-            response = client.get(f"/api/v1/guardians/{guardian_id}")
+            response = client.get(
+                f"/api/v1/guardians/{guardian_id}",
+                headers=admin_auth_header,
+            )
         
         # Assert
         assert response.status_code == 404

@@ -2,6 +2,7 @@
 import hashlib
 import secrets
 from datetime import datetime, timezone, timedelta
+from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.user import UserRepository
 from app.repositories.refresh_token import RefreshTokenRepository
@@ -26,6 +27,16 @@ from app.core.exceptions import (
     RefreshTokenExpired,
     RefreshTokenRevoked,
 )
+from app.core.audit import (
+    audit_login_success,
+    audit_login_failed,
+    audit_register_success,
+    audit_password_changed,
+    audit_token_refreshed,
+    audit_logout,
+    audit_logout_all,
+    audit_token_cleanup,
+)
 from app.utils.logger import logger
 
 
@@ -45,7 +56,9 @@ class AuthService:
         self.password_service = PasswordService()
         self.jwt_service = JWTService()
 
-    async def register(self, data: UserCreate) -> UserResponse:
+    async def register(
+        self, data: UserCreate, ip_address: Optional[str] = None
+    ) -> UserResponse:
         """Register a new user account.
 
         Validates password strength, checks for duplicate email,
@@ -54,6 +67,7 @@ class AuthService:
 
         Args:
             data: User registration data.
+            ip_address: Optional client IP for audit logging.
 
         Returns:
             UserResponse: The created user.
@@ -95,9 +109,17 @@ class AuthService:
             f"email={user.email}, role={user.role}"
         )
 
+        audit_register_success(
+            user_id=str(user.id),
+            email=user.email,
+            ip_address=ip_address,
+        )
+
         return UserResponse.model_validate(user)
 
-    async def login(self, data: UserLoginRequest) -> TokenResponse:
+    async def login(
+        self, data: UserLoginRequest, ip_address: Optional[str] = None
+    ) -> TokenResponse:
         """Authenticate a user and return access + refresh tokens.
 
         Validates email and password, checks user is active,
@@ -106,6 +128,7 @@ class AuthService:
 
         Args:
             data: Login credentials.
+            ip_address: Optional client IP for audit logging.
 
         Returns:
             TokenResponse: Access token, refresh token, and metadata.
@@ -117,16 +140,19 @@ class AuthService:
         # Find user by email
         user = await self.user_repo.get_by_email(data.email)
         if not user:
+            audit_login_failed(email=data.email, ip_address=ip_address)
             raise InvalidCredentials()
 
         # Verify password
         if not self.password_service.verify_password(
             data.password, user.password_hash
         ):
+            audit_login_failed(email=data.email, ip_address=ip_address)
             raise InvalidCredentials()
 
         # Check user is active
         if not user.is_active:
+            audit_login_failed(email=data.email, ip_address=ip_address)
             raise UserNotActive(user_id=str(user.id))
 
         # Update last login
@@ -158,6 +184,12 @@ class AuthService:
             f"User logged in: user_id={user.id}, email={user.email}"
         )
 
+        audit_login_success(
+            user_id=str(user.id),
+            email=user.email,
+            ip_address=ip_address,
+        )
+
         return TokenResponse(
             access_token=access_token,
             refresh_token=refresh_token_str,
@@ -165,7 +197,9 @@ class AuthService:
             expires_in=self.jwt_service.access_token_expire_minutes * 60,
         )
 
-    async def refresh_token(self, data: RefreshTokenRequest) -> TokenResponse:
+    async def refresh_token(
+        self, data: RefreshTokenRequest, ip_address: Optional[str] = None
+    ) -> TokenResponse:
         """Refresh an access token using a refresh token.
 
         Validates the refresh token hash, checks expiry and revocation,
@@ -174,6 +208,7 @@ class AuthService:
 
         Args:
             data: Refresh token request.
+            ip_address: Optional client IP for audit logging.
 
         Returns:
             TokenResponse: New access token, refresh token, and metadata.
@@ -234,6 +269,11 @@ class AuthService:
             f"Token refreshed: user_id={user.id}"
         )
 
+        audit_token_refreshed(
+            user_id=str(user.id),
+            ip_address=ip_address,
+        )
+
         return TokenResponse(
             access_token=access_token,
             refresh_token=new_refresh_token_str,
@@ -241,12 +281,16 @@ class AuthService:
             expires_in=self.jwt_service.access_token_expire_minutes * 60,
         )
 
-    async def logout(self, user_id: str, refresh_token: str) -> None:
+    async def logout(
+        self, user_id: str, refresh_token: str,
+        ip_address: Optional[str] = None,
+    ) -> None:
         """Logout by revoking the specific refresh token.
 
         Args:
             user_id: The user UUID (for audit).
             refresh_token: The refresh token string to revoke.
+            ip_address: Optional client IP for audit logging.
         """
         token_hash = self._hash_token(refresh_token)
         stored = await self.token_repo.get_by_token_hash(token_hash)
@@ -259,12 +303,16 @@ class AuthService:
                     f"User logged out: user_id={user_id}, "
                     f"token_revoked=True"
                 )
+                audit_logout(user_id=user_id, ip_address=ip_address)
 
-    async def logout_all(self, user_id: str) -> int:
+    async def logout_all(
+        self, user_id: str, ip_address: Optional[str] = None
+    ) -> int:
         """Logout from all sessions by revoking all refresh tokens.
 
         Args:
             user_id: The user UUID.
+            ip_address: Optional client IP for audit logging.
 
         Returns:
             int: Number of tokens revoked.
@@ -273,6 +321,9 @@ class AuthService:
         logger.info(
             f"User logged out from all sessions: "
             f"user_id={user_id}, tokens_revoked={count}"
+        )
+        audit_logout_all(
+            user_id=user_id, count=count, ip_address=ip_address,
         )
         return count
 
@@ -316,7 +367,8 @@ class AuthService:
         return UserResponse.model_validate(user)
 
     async def change_password(
-        self, user_id: str, data: ChangePasswordRequest
+        self, user_id: str, data: ChangePasswordRequest,
+        ip_address: Optional[str] = None,
     ) -> None:
         """Change a user's password.
 
@@ -326,6 +378,7 @@ class AuthService:
         Args:
             user_id: The user UUID.
             data: Current and new password.
+            ip_address: Optional client IP for audit logging.
 
         Raises:
             UserNotFound: If the user does not exist.
@@ -357,6 +410,32 @@ class AuthService:
         logger.info(
             f"Password changed: user_id={user_id}"
         )
+
+        audit_password_changed(user_id=user_id, ip_address=ip_address)
+
+    async def cleanup_expired_tokens(
+        self, ip_address: Optional[str] = None
+    ) -> int:
+        """Delete all expired refresh tokens.
+
+        This is a maintenance operation that can be called
+        periodically or on demand. Does not run automatically.
+
+        Args:
+            ip_address: Optional client IP for audit logging.
+
+        Returns:
+            int: Number of deleted tokens.
+        """
+        count = await self.token_repo.cleanup_expired()
+        if count > 0:
+            logger.info(
+                f"Cleaned up {count} expired refresh tokens"
+            )
+            audit_token_cleanup(
+                deleted_count=count, ip_address=ip_address,
+            )
+        return count
 
     def _generate_refresh_token_pair(self) -> tuple[str, str]:
         """Generate a cryptographically secure refresh token and its hash.

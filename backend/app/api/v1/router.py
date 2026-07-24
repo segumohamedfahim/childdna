@@ -14,6 +14,10 @@ from app.api.v1.endpoints.matching import router as matching_router
 from app.api.v1.endpoints.alert import router as alert_router
 from app.api.v1.endpoints.notification import router as notification_router
 from app.api.v1.endpoints.auth import router as auth_router
+from app.api.v1.endpoints.admin import router as admin_router
+from app.api.v1.endpoints.report import router as report_router
+from app.api.v1.endpoints.analytics import router as analytics_router
+from app.api.v1.endpoints.prediction import router as prediction_router
 
 api_router = APIRouter()
 
@@ -34,3 +38,7 @@ api_router.include_router(matching_router)
 api_router.include_router(alert_router)
 api_router.include_router(notification_router)
 api_router.include_router(auth_router)
+api_router.include_router(admin_router)
+api_router.include_router(report_router)
+api_router.include_router(analytics_router)
+api_router.include_router(prediction_router)

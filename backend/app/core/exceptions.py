@@ -446,6 +446,21 @@ class RefreshTokenExpired(HTTPException):
         )
 
 
+class InsufficientPermissions(HTTPException):
+    """Exception raised when a user lacks the required role"""
+
+    def __init__(self, required_roles: list[str]) -> None:
+        super().__init__(
+            status_code=403,
+            detail={
+                "success": False,
+                "message": f"Insufficient permissions. Required roles: {', '.join(required_roles)}",
+                "error_code": "INSUFFICIENT_PERMISSIONS",
+                "details": {"required_roles": required_roles},
+            },
+        )
+
+
 class RefreshTokenRevoked(HTTPException):
     """Exception raised when a refresh token has been revoked"""
 
@@ -728,6 +743,15 @@ def register_exception_handlers(app) -> None:
     @app.exception_handler(RefreshTokenRevoked)
     async def refresh_token_revoked_handler(
         request: Request, exc: RefreshTokenRevoked
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=exc.detail,
+        )
+
+    @app.exception_handler(InsufficientPermissions)
+    async def insufficient_permissions_handler(
+        request: Request, exc: InsufficientPermissions
     ) -> JSONResponse:
         return JSONResponse(
             status_code=exc.status_code,

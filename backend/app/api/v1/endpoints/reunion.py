@@ -28,16 +28,7 @@ async def record_reunion(
     reunion_data: ReunionRecordCreate,
     session: AsyncSession = Depends(get_db),
 ) -> ReunionRecordResponse:
-    """Record a reunion and close the rescue incident.
-
-    Args:
-        incident_id: The incident UUID.
-        reunion_data: Reunion record creation data.
-        session: Database session.
-
-    Returns:
-        ReunionRecordResponse: The created reunion record.
-    """
+    """Record a reunion and close the rescue incident."""
     service = ReunionService(session)
     return await service.record_reunion(incident_id, reunion_data)
 
@@ -53,14 +44,6 @@ async def get_child_reunions(
     child_id: str,
     session: AsyncSession = Depends(get_db),
 ) -> list[ReunionRecordResponse]:
-    """Get all reunion records for a child.
-
-    Args:
-        child_id: The child UUID.
-        session: Database session.
-
-    Returns:
-        list[ReunionRecordResponse]: List of reunion records.
-    """
+    """Get all reunion records for a child."""
     service = ReunionService(session)
     return await service.get_child_reunions(child_id)

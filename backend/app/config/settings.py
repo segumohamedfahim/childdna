@@ -5,50 +5,89 @@ from typing import Optional
 
 class Settings(BaseSettings):
     """Application configuration from environment variables"""
-    
+
     # Application
     APP_NAME: str = "Child DNA API"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
     ENVIRONMENT: str = "development"
-    
+
     # Server
     HOST: str = "0.0.0.0"
     PORT: int = 8000
     API_PREFIX: str = "/api/v1"
-    
+
     # Database
     DATABASE_URL: str = "postgresql://postgres:fahim2007@localhost:5432/child_dna"
-    
+
     # JWT
     JWT_SECRET_KEY: str = "your-secret-key-min-32-characters-long"
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
-    
+
     # CORS
     CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
-    
+
     # Token Generation
     TOKEN_PREFIX: str = "DNA"
     TOKEN_SEPARATOR: str = "-"
     TOKEN_SEGMENT_LENGTH: int = 4
     MAX_TOKEN_GENERATION_ATTEMPTS: int = 3
-    
+
     # QR Code Generation
     DEFAULT_QR_SIZE: int = 300
     MIN_QR_SIZE: int = 50
     MAX_QR_SIZE: int = 2000
-    
+
     # Logging
     LOG_LEVEL: str = "INFO"
     LOG_FORMAT: str = "json"
-    
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=True,
     )
+
+    def validate_settings(self) -> None:
+        """Validate critical settings at startup.
+
+        In production mode, fail with a clear error if:
+        - JWT_SECRET_KEY is the default value
+        - JWT_SECRET_KEY is shorter than 32 characters
+        - ENVIRONMENT is not set correctly
+
+        In development mode, log warnings but do not fail.
+        """
+        if self.ENVIRONMENT not in ("development", "production"):
+            raise RuntimeError(
+                f"Invalid ENVIRONMENT '{self.ENVIRONMENT}'. "
+                "Must be 'development' or 'production'."
+            )
+
+        if self.ENVIRONMENT == "production":
+            errors = []
+
+            # Check for default JWT secret
+            if self.JWT_SECRET_KEY == "your-secret-key-min-32-characters-long":
+                errors.append(
+                    "JWT_SECRET_KEY is set to the default value. "
+                    "Set a secure, unique secret in production."
+                )
+
+            # Check minimum length
+            if len(self.JWT_SECRET_KEY) < 32:
+                errors.append(
+                    f"JWT_SECRET_KEY is too short ({len(self.JWT_SECRET_KEY)} chars). "
+                    "Must be at least 32 characters."
+                )
+
+            if errors:
+                raise RuntimeError(
+                    "Production configuration validation failed:\n" +
+                    "\n".join(f"  - {e}" for e in errors)
+                )
 
 
 settings = Settings()

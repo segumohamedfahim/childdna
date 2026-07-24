@@ -27,15 +27,7 @@ async def create_incident(
     incident_data: RescueSessionCreate,
     session: AsyncSession = Depends(get_db),
 ) -> RescueSessionResponse:
-    """Create a new rescue incident.
-
-    Args:
-        incident_data: Rescue session creation data.
-        session: Database session.
-
-    Returns:
-        RescueSessionResponse: The created incident.
-    """
+    """Create a new rescue incident."""
     service = RescueService(session)
     return await service.create_incident(incident_data)
 
@@ -52,16 +44,7 @@ async def list_incidents(
     limit: int = Query(default=10, ge=1, le=100, description="Maximum records to return"),
     session: AsyncSession = Depends(get_db),
 ) -> list[RescueSessionResponse]:
-    """List all rescue incidents with pagination.
-
-    Args:
-        skip: Number of records to skip.
-        limit: Maximum records to return.
-        session: Database session.
-
-    Returns:
-        list[RescueSessionResponse]: List of incidents.
-    """
+    """List all rescue incidents with pagination."""
     service = RescueService(session)
     return await service.list_incidents(skip=skip, limit=limit)
 
@@ -77,15 +60,7 @@ async def get_incident(
     incident_id: str,
     session: AsyncSession = Depends(get_db),
 ) -> RescueSessionResponse:
-    """Get a rescue incident by ID.
-
-    Args:
-        incident_id: The incident UUID.
-        session: Database session.
-
-    Returns:
-        RescueSessionResponse: The incident.
-    """
+    """Get a rescue incident by ID."""
     service = RescueService(session)
     return await service.get_incident(incident_id)
 
@@ -107,16 +82,7 @@ async def update_incident(
     update_data: RescueSessionUpdate,
     session: AsyncSession = Depends(get_db),
 ) -> RescueSessionResponse:
-    """Update a rescue incident.
-
-    Args:
-        incident_id: The incident UUID.
-        update_data: Rescue session update data.
-        session: Database session.
-
-    Returns:
-        RescueSessionResponse: The updated incident.
-    """
+    """Update a rescue incident."""
     service = RescueService(session)
     return await service.update_incident(incident_id, update_data)
 
@@ -132,14 +98,6 @@ async def get_child_incidents(
     child_id: str,
     session: AsyncSession = Depends(get_db),
 ) -> list[RescueSessionResponse]:
-    """Get all incidents for a child.
-
-    Args:
-        child_id: The child UUID.
-        session: Database session.
-
-    Returns:
-        list[RescueSessionResponse]: List of incidents.
-    """
+    """Get all incidents for a child."""
     service = RescueService(session)
     return await service.get_child_incidents(child_id)

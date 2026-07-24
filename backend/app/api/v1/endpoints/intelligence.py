@@ -24,16 +24,7 @@ async def analyze_incident(
     request: AnalyzeRequest,
     session: AsyncSession = Depends(get_db),
 ) -> AnalyzeResponse:
-    """Analyze a rescue report and return structured intelligence.
-
-    Args:
-        incident_id: The incident UUID.
-        request: Analysis request with report text.
-        session: Database session.
-
-    Returns:
-        AnalyzeResponse: Structured analysis with confidence scores.
-    """
+    """Analyze a rescue report and return structured intelligence."""
     service = IncidentIntelligenceService(session)
     return await service.analyze(incident_id, request)
 
@@ -49,14 +40,6 @@ async def get_incident_analysis(
     incident_id: str,
     session: AsyncSession = Depends(get_db),
 ) -> AnalyzeResponse:
-    """Get existing analysis for an incident.
-
-    Args:
-        incident_id: The incident UUID.
-        session: Database session.
-
-    Returns:
-        AnalyzeResponse: The stored analysis.
-    """
+    """Get existing analysis for an incident."""
     service = IncidentIntelligenceService(session)
     return await service.get_analysis(incident_id)

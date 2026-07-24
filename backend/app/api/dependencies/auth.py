@@ -1,5 +1,5 @@
-"""Authentication Dependencies - JWT Token Validation"""
-from typing import Optional
+"""Authentication Dependencies - JWT Token Validation and RBAC"""
+from typing import Optional, Callable
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,7 +7,8 @@ import jwt as pyjwt
 from app.database.connection import get_db
 from app.repositories.user import UserRepository
 from app.models.user import User
-from app.core.exceptions import InvalidToken, ExpiredToken
+from app.models.enums import UserRole
+from app.core.exceptions import InvalidToken, ExpiredToken, InsufficientPermissions
 from app.config.settings import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login", auto_error=False)
@@ -17,23 +18,7 @@ async def get_current_user(
     token: Optional[str] = Depends(oauth2_scheme),
     session: AsyncSession = Depends(get_db),
 ) -> User:
-    """Extract and validate JWT, return authenticated User.
-
-    Decodes the Bearer token from the Authorization header,
-    extracts the user_id from the 'sub' claim, looks up the
-    user in the database, and returns the User model.
-
-    Args:
-        token: The JWT access token from the Authorization header.
-        session: Database session.
-
-    Returns:
-        User: The authenticated user.
-
-    Raises:
-        InvalidToken: If the token is missing, malformed, or invalid.
-        ExpiredToken: If the token has expired.
-    """
+    """Extract and validate JWT, return authenticated User."""
     if token is None:
         raise InvalidToken(message="Authentication required")
 
@@ -64,19 +49,7 @@ async def get_optional_user(
     token: Optional[str] = Depends(oauth2_scheme),
     session: AsyncSession = Depends(get_db),
 ) -> Optional[User]:
-    """Return authenticated user if token present, None otherwise.
-
-    Unlike get_current_user, this dependency does not raise an
-    exception when no token is provided. This allows endpoints
-    to work for both authenticated and unauthenticated users.
-
-    Args:
-        token: The JWT access token (optional).
-        session: Database session.
-
-    Returns:
-        Optional[User]: The authenticated user, or None.
-    """
+    """Return authenticated user if token present, None otherwise."""
     if token is None:
         return None
 
@@ -95,3 +68,28 @@ async def get_optional_user(
 
     repo = UserRepository(session)
     return await repo.get_by_id(user_id)
+
+
+def require_role(*roles: UserRole) -> Callable:
+    """Return a dependency that checks the user has one of the given roles.
+
+    Usage:
+        @router.get("/admin/users")
+        async def list_users(
+            current_user: User = Depends(require_role(UserRole.ADMIN)),
+        ):
+            ...
+
+    The role check is delegated to _verify_role which can be overridden
+    in tests via dependency_overrides.
+    """
+    async def _role_checker(
+        current_user: User = Depends(get_current_user),
+    ) -> User:
+        if current_user.role not in [r.value for r in roles]:
+            raise InsufficientPermissions(
+                required_roles=[r.value for r in roles]
+            )
+        return current_user
+
+    return _role_checker
